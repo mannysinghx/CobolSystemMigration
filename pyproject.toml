@@ -1,0 +1,80 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cobolshift"
+version = "0.1.0"
+description = "End-to-end COBOL to SQL Server / PostgreSQL migration tool"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # Web framework
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    # Database clients
+    "psycopg[binary,pool]>=3.2.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.13.0",
+    # COBOL parsing
+    "antlr4-python3-runtime==4.13.2",
+    # Data types & precision
+    "pydantic>=2.8.0",
+    "pydantic-settings>=2.4.0",
+    # Async task queue
+    "celery[redis]>=5.4.0",
+    "redis>=5.0.0",
+    # CDC / Kafka
+    "confluent-kafka>=2.5.0",
+    # Encryption
+    "cryptography>=43.0.0",
+    # CLI
+    "typer>=0.12.0",
+    "rich>=13.8.0",
+    # HTTP client (for health checks)
+    "httpx>=0.27.0",
+    # Utilities
+    "python-multipart>=0.0.9",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "python-dotenv>=1.0.0",
+    "orjson>=3.10.0",
+    "aiofiles>=24.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+    "httpx>=0.27.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
+]
+sqlserver = [
+    "pyodbc>=5.1.0",
+]
+
+[project.scripts]
+cobolshift = "backend.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["backend"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["B008"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+ignore_missing_imports = true
